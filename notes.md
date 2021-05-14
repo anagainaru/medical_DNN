@@ -1,3 +1,34 @@
+# Outline
+
+# Problem formulation
+
+## AI application patterns
+
+**Functionality**
+
+Multiple steps within the training and the interference steps of an AI algorithm. Steps withing a DNN: for training **pre-processing, model discovery, model training** and for interference **high parameter optimizations, post-processing**. Each with different IO patterns and requirements.
+
+Advanced data management approaches are needed to save / stream intermediate DNN models/layers as the training (or inference) progresses. In addition to the normal progress of the training, interference steps, the model or data might need to be saved to storage to preserve them for later study/revisiting, or they might need to be clone for the purpose of forking the training / inference into different parallel directions.
+
+Type of parallelism used by training / interference methods: **data parallelism**, **model parallelism** and **pipeline parallelism**
+(opportunities and challenges for each). In addition the pre-processing, post-processing steps might be expensive due to data manipulation.
+
+*Data management systems need to automatically capture the evolution of the snapshots, expose their properties, enable search based on such properties, reshape the snapshots on-the-fly to adapt
+to a new context where it needs to be used.*
+
+*However, providing such advanced data management capabilities is challenging, because DNN training approaches are constantly being adapted to take
+advantage of large-scale infrastructures. *
+
+**IO patterns**
+
+Compared to HPC applications, more focus on read and more need for streaming.
+
+## Proposed scheme
+
+**Streaming**
+
+Bring data that is needed first at high resolution, the rest slower overlapping computation
+
 ## Applications
 
 <img width="1348" alt="Screen Shot 2021-05-12 at 3 50 53 PM" src="https://user-images.githubusercontent.com/16229479/118035894-d8fe8a00-b339-11eb-8b4d-3e54727dbf9e.png">
