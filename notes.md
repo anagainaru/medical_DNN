@@ -1,4 +1,70 @@
+# Paper outline
+
+### Introduction
+
+1. **Big data revolution**
+
+[1] [https://journalofbigdata.springeropen.com/articles/10.1186/s40537-020-00361-2](https://journalofbigdata.springeropen.com/articles/10.1186/s40537-020-00361-2)
+
+The big data revolution disrupted the digital and computing landscape in the early 2010s. Data torrents produced by corporations such as Google, Amazon, Facebook and YouTube, among others, presented a unique opportunity for innovation. Traditional signal processing tools and computing methodologies were inadequate to turn these big-data challenges into technological breakthroughs. The quest for novel pattern recognition algorithms that sift through large, high-quality data sets eventually led to a disruptive combination of deep learning and graphics processing units (GPUs) that enabled a rapid succession of advances in computer vision, speech recognition, natural language processing, and robotics, to mention a few.
+
+2. **Convergency of AI and HPC**
+
+The convergence of AI and HPC is being pursued in earnest across the HPC ecosystem. Recent accomplishments of this program have been reported in plasma physics [20], cosmology [21], gravitational wave astrophysics [22], high energy physics [23], multi-messenger astrophysics [24], materials science [25], data management of unstructured datasets [26, 27], and genetic data [28], among others.
+
+These achievements share a common thread, namely, the algorithms developed to accelerate the training of AI models in HPC platforms have a strong experimental component. To date, there is no rigorous framework to constrain the ideal set of hyper-parameters that ensures rapid convergence and optimal performance of AI models as the number of GPU nodes is increased to accelerate the training stage. 
+
+[Figure with speed-up on multiple GPUs]
+[About figure: Additionally, we also scaled the data-parallel distributed training strategy up to 6144 NVIDIA V100 GPUs at 80% efficiency on the Summit supercomputer at Oak Ridge National Laboratory, as shown in right panel of Fig. 7. In data-parallel distribution scheme, the neural network model is replicated on each individual GPU and each replication is fed non-overlapping batches of training data in parallel. After each batch, the GPUs communicate to synchronize gradients and update model weights. Because this scheme involves a linear increase in global batch size with the number of GPUs, it has been observed that such scaling leads to a degradation in convergence and generalization of the model [65]. To address this issue, we employed the layer-wise adaptive large batch optimization technique (LAMB) [66], and successfully trained the model without degradation in convergence using 1536 NVIDIA V100 GPUs within 1.2 hours. We have made the trained model [67] and testing dataset publicly available at Data and Learning Hub for Science (DLHub) [68], [69] hosted at Argonne National Laboratory.]
+
+These examples clearly underscore the importance of coupling AI with HPC: (i) it significantly speeds up the training stage, enabling the exploration of domain-inspired architectures and optimization schemes, which are critical for the design of rigorous, trustworthy and interpretable AI solutions; (ii) it enables the use of larger training data sets to boost the accuracy and reliability of AI models while keeping the training stage at a minimum.
+
+
+3. **Challenges**
+ 
+Types of training / interference and data patterns
+
+4. **Opportunities**
+
+The Frontier, Aurora and El Capitan exascale systems will combine simulation, data science, and machine learning to revolutionize how supercomputers are used for scientific discovery and innovation.
+The development of a rigorous mathematical framework to make informed choices of domain inspired AI architectures and optimization schemes; (ii) the creation of an interdisciplinary effort that brings together domain, information science, AI, data and software experts to inform the collection and curation of experimental and simulation datasets; (iii) the identification of connections between AI data and models, which will facilitate the production of commodity software that may be seamlessly applicable to disparate fields that share common data and computing data challenges
+
+While it is customary to quantify the performance of HPC platforms for distributed training at scale using idealized datasets and vanilla AI models, i.e., ResNet-50 trained with the ImageNet dataset, it is also important to assess the performance of advanced cyberinfrastructure facilities to train more complex, domain-inspired AI models with realistic, experimental datasets.
+
+## Problem formulation
+
+### AI application patterns
+
+**Functionality**
+
+Multiple steps within the training and the interference steps of an AI algorithm. Steps withing a DNN: for training **pre-processing, model discovery, model training** and for interference **high parameter optimizations, post-processing**. Each with different IO patterns and requirements.
+
+Advanced data management approaches are needed to save / stream intermediate DNN models/layers as the training (or inference) progresses. In addition to the normal progress of the training, interference steps, the model or data might need to be saved to storage to preserve them for later study/revisiting, or they might need to be clone for the purpose of forking the training / inference into different parallel directions.
+
+Type of parallelism used by training / interference methods: **data parallelism**, **model parallelism** and **pipeline parallelism**
+(opportunities and challenges for each). In addition the pre-processing, post-processing steps might be expensive due to data manipulation.
+
+*Data management systems need to automatically capture the evolution of the snapshots, expose their properties, enable search based on such properties, reshape the snapshots on-the-fly to adapt
+to a new context where it needs to be used.*
+
+*However, providing such advanced data management capabilities is challenging, because DNN training approaches are constantly being adapted to take
+advantage of large-scale infrastructures. *
+
+**IO patterns**
+
+Compared to HPC applications, more focus on read and more need for streaming.
+
+## Proposed scheme
+
+**Streaming**
+
+Bring data that is needed first at high resolution, the rest slower overlapping computation
+
+
 ## Applications
+
+Paper [1]  The AI models we consider are tailored for image recognition, classification and regression analyses of telescope image datasets, and time-series data that describe the collision of black holes.
+
 
 <img width="1348" alt="Screen Shot 2021-05-12 at 3 50 53 PM" src="https://user-images.githubusercontent.com/16229479/118035894-d8fe8a00-b339-11eb-8b4d-3e54727dbf9e.png">
 
