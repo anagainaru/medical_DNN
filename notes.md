@@ -162,3 +162,6 @@ revisit/reuse previous data states. Note the versatility of reshape, which can b
 extended with multiple other patterns. For example, data states could be used to
 record a lineage for Tensorflow [1] by introducing support for tensor operations:
 slice, rebalance, stack, etc
+
+However, redundancy is detected onthe-fly, which can be an unnecessary overhead for clone and revisit (e.g., model
+replicas are known to be identical for data-parallel training).
