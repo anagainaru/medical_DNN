@@ -126,3 +126,42 @@ maintenance costs). Given such a high-cost and energy consumption, utilization o
 as close to 100% as possible!
 
 1. [https://www.pcmag.com/news/us-to-spend-600-million-on-frontier-exascale-supercomputer](https://www.pcmag.com/news/us-to-spend-600-million-on-frontier-exascale-supercomputer)
+
+
+### Research
+Both the data states and the transitions between them are recorded into
+the lineage, which keeps the evolution of the data states. The lineage exposes
+primitives to navigate (i.e., move to a successor or predecessor) and to search
+(i.e., find data states that satisfy given properties) the lineage.
+
+For example,
+this can be used to follow the evolution of tagged DNN model states during
+training or to search for previously tagged intermediate DNN models based on
+their accuracy and/or other attributes. Furthermore, each data state can be
+part of one or more scopes, which are explicitly specified in Ma. To avoid the
+explosion of storage space utilization, non-critical data states that have gone out
+of scope (e.g., non-critical or locally relevant intermediate DNN models) and
+their transitions can be pruned from the lineage as needed. Pruning is subject
+to garbage collection algorithms, but can also be triggered explicitly through a
+dedicated primitive.
+
+The lineage can be combined with two additional powerful primitives: fork
+and reshape. Both of them are similar to tagging (i.e., they trigger a transition
+to a new data state and the execution of an asynchronous action plan) but with
+important differences. Fork creates a clone of the data state on an entirely different set of processes and “splits” the lineage into two independent directions that 
+can evolve separately. For example, fork can be used to explore an alternative direction for training a DNN model (e.g., using different hyper-parameters and/or
+training samples). Reshape enables the processes to change the layout and/or
+distribution of C, by specifying appropriate attributes in Ma. Specifically, this
+refers to operations such as migrate (to different processes) and shuffle (i.e., ex-
+change pieces of C between processes, which is a common pattern in distributed
+training of DNN models). 
+
+Combined with tagging and search/navigation, these
+two primitives allow flexible strategies to explore multiple parallel evolutions and
+revisit/reuse previous data states. Note the versatility of reshape, which can be
+extended with multiple other patterns. For example, data states could be used to
+record a lineage for Tensorflow [1] by introducing support for tensor operations:
+slice, rebalance, stack, etc
+
+However, redundancy is detected onthe-fly, which can be an unnecessary overhead for clone and revisit (e.g., model
+replicas are known to be identical for data-parallel training).
