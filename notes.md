@@ -24,6 +24,9 @@ These examples clearly underscore the importance of coupling AI with HPC: (i) it
  
 Types of training / interference and data patterns
 
+![model](https://user-images.githubusercontent.com/16229479/120384942-cf42c380-c2f4-11eb-898b-bd0dd6c8a574.png)
+
+
 4. **Opportunities**
 
 The Frontier, Aurora and El Capitan exascale systems will combine simulation, data science, and machine learning to revolutionize how supercomputers are used for scientific discovery and innovation.
