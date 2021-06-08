@@ -1,4 +1,11 @@
-# Running DNN applications used by medical codes 
+# Running ML applications
+
+### Workflow
+
+<img width="799" alt="ML workflow" src="https://user-images.githubusercontent.com/16229479/121259218-d2eac300-c87d-11eb-99b5-458efd61edcd.png">
+
+
+### Running instructions
 
 In order to use the tensorflow spack package on Summit:
 ```
