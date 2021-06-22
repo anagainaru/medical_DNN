@@ -2,11 +2,11 @@
 
 Codes in `/gpfs/alpine/csc143/proj-shared/againaru/medical`.
 
-![AI patters](figs/trainig_patterns.png)
+![AI patters](figs/training_patterns.png)
 
-Pattern and performance analysis for AI applications
-- Quip classification, [link](quip_classification.md)
-- CANDLE, [link](candle.md)
+We are looking at pattern and performance analysis for AI applications. List of analyzed applications:
+- **Quip classification** ([link](quip_classification.md)) uses 3 steps for preprocessing and the ML training/classification
+- **CANDLE** ([link](candle.md))
 
 Discussion on the model abstraction can be found [here](smc21-notes.md).
 
