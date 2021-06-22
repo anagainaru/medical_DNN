@@ -4,6 +4,39 @@
 
 <img width="799" alt="ML workflow" src="https://user-images.githubusercontent.com/16229479/121259218-d2eac300-c87d-11eb-99b5-458efd61edcd.png">
 
+**Step 1. Divide image into tiles**
+
+Tile extraction from a whole slide image is done in `quip_home/u24_lymphocyte/patch_extraction/save_svs_to_tiles.py` 
+
+```python
+pw = int(patch_size_20X * mag / 20);
+width = oslide.dimensions[0];
+height = oslide.dimensions[1];
+for x in range(1, width, pw):
+    for y in range(1, height, pw):
+       patch = oslide.read_region((x, y), 0, (pw_x, pw_y));
+       # filter, resize and write to png file
+```
+
+Non-overlapping tiles of fixed size are written one per png file. 
+
+**Step 2 and 3. Divide tile into patches and create batches**
+
+Patch extraction is implemented in `u24_lymphocyte/prediction/lymphocyte/pred.py` together with the batch creation in the `load_data` function.
+
+```python
+# parse all the tiles 
+png = np.array(Image.open(full_fn).convert('RGB'));
+for x in range(0, png.shape[1], APS):
+    for y in range(0, png.shape[0], APS):
+       # apply some transformation and add the patch in the batch 
+       # until we reach the required BatchSize
+       if xind >= BatchSize:
+            break;
+```
+
+Tiles will not be split across batches. E.g. if the tile size is 10x10 and patch size is 1x1, there are 100 patches in one tile. If the BatchSize is 196, one batch will contain 200 patches (2 tiles).
+
 
 ### Running instructions
 
