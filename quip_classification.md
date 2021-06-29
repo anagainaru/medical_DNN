@@ -1,6 +1,10 @@
 # Quip Classification
 
-Code available on [GitHub](https://github.com/SBU-BMI/quip_classification)).
+Code available on [GitHub](https://github.com/SBU-BMI/quip_classification).
+
+**Table of contents**
+- [Quip Workflow](#workflow)
+- [Running on Summit](#running-on-summit)
 
 ## Workflow
 
@@ -86,6 +90,8 @@ Example line that needs update (in `u24_lymphocyte/conf/variables.sh`):
 ```
 export APP_DIR=/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_app
 ```
+
+### Building the code
 
 ### Submission
 
