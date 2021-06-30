@@ -103,6 +103,7 @@ module load  ibm-wml-ce/1.6.2-1
 conda create --name cloned-ibm-env --clone ibm-wml-ce-1.6.2-1
 conda activate cloned-ibm-env
 conda install mpi4py
+conda install numpy
 ```
 
 By default this should create the cloned environment in `/ccs/home/againaru/.conda/envs/cloned-ibm-env`. This has to be done only once. Future uses will use:
@@ -110,6 +111,25 @@ By default this should create the cloned environment in `/ccs/home/againaru/.con
 ```bash
 module load  ibm-wml-ce/1.6.2-1
 conda activate cloned-ibm-env
+```
+
+From the cloned environment ADIOS2 can be built with python bindings. ADIOS2 python and OpenSlide have been built by Dmitry and can be linked directly.
+
+```
+module load  ibm-wml-ce/1.6.2-1
+conda activate ibm-wml-ce-1.6.2-1 
+module load hdf5
+
+#ADIOS2
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib/python3.6/site-packages:$PYTHONPATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib64:$LD_LIBRARY_PATH
+
+#Openslide-python
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/openslide-python-1.1.2/build/lib.linux-ppc64le-3.6:$PYTHONPATH
+#openslide - so
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/openslide-rpm/usr/lib64/:$LD_LIBRARY_PATH
+#openjpeg
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/libopenjpeg1-rpm/usr/lib64:$LD_LIBRARY_PATH
 ```
 
 ### Submission
