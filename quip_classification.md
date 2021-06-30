@@ -1,6 +1,9 @@
 # Quip Classification
 
-Code available on [GitHub](https://github.com/SBU-BMI/quip_classification)).
+**Table of contents**
+- [Quip Workflow](#workflow)
+- [Running on Summit](#running-on-summit)
+- Code available on [GitHub](https://github.com/SBU-BMI/quip_classification).
 
 ## Workflow
 
@@ -58,6 +61,10 @@ The code concatenates the classification for each batch.
 
 ## Running on Summit
 
+- [Code updates required to run](#modifications-to-the-code)
+- [Building on Summit](#building-the-code)
+- [Submitting the code on Summit](#submission)
+
 Code can be found in `/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_app` (Also in Dmitry's folder `/gpfs/alpine/world-shared/csc143/ganyushin/quip_app`)
 
 The `data` contains the input and output data stored in 4 folders:
@@ -66,7 +73,7 @@ The `data` contains the input and output data stored in 4 folders:
 - `patches.org` lager set of png images
 - `svs` is a symbolic link for raw image data pointing to `/gpfs/alpine/csc303/world-shared/tkurc1/wsi/brca/`
 
-**Modifications to the code**
+### Modifications to the code
 
 In the `quip_classification`, all the configuration files from the `u24_lymphocyte` need to point to the current path.
 The following files need to be updated to point to the root path of the quip benchmark:
@@ -85,6 +92,44 @@ u24_lymphocyte/prediction/NNFramework_TF_models/config_vgg-mix_test_ext_binary.i
 Example line that needs update (in `u24_lymphocyte/conf/variables.sh`):
 ```
 export APP_DIR=/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_app
+```
+
+### Building the code
+
+The `mpi4py` package is not installed by default in the ML environment. For this purpose, a local clone needs to be created and the package installed.
+
+```bash
+module load  ibm-wml-ce/1.6.2-1
+conda create --name cloned-ibm-env --clone ibm-wml-ce-1.6.2-1
+conda activate cloned-ibm-env
+conda install mpi4py
+conda install numpy
+```
+
+By default this should create the cloned environment in `/ccs/home/againaru/.conda/envs/cloned-ibm-env`. This has to be done only once. Future uses will use:
+
+```bash
+module load  ibm-wml-ce/1.6.2-1
+conda activate cloned-ibm-env
+```
+
+From the cloned environment ADIOS2 can be built with python bindings. ADIOS2 python and OpenSlide have been built by Dmitry and can be linked directly.
+
+```
+module load  ibm-wml-ce/1.6.2-1
+conda activate ibm-wml-ce-1.6.2-1 
+module load hdf5
+
+#ADIOS2
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib/python3.6/site-packages:$PYTHONPATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib64:$LD_LIBRARY_PATH
+
+#Openslide-python
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/openslide-python-1.1.2/build/lib.linux-ppc64le-3.6:$PYTHONPATH
+#openslide - so
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/openslide-rpm/usr/lib64/:$LD_LIBRARY_PATH
+#openjpeg
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/libopenjpeg1-rpm/usr/lib64:$LD_LIBRARY_PATH
 ```
 
 ### Submission
