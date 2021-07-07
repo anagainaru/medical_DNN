@@ -3,6 +3,7 @@
 **Table of contents**
 - [Quip Workflow](#workflow)
 - [Running on Summit](#running-on-summit)
+- [Performance on Summit](#performance-on-summit)
 - Code available on [GitHub](https://github.com/SBU-BMI/quip_classification).
 
 ## Workflow
@@ -164,3 +165,22 @@ bsub dl_benchmark.sh
 
 Logs will be created in `data/output`. A `patch-level-lym.txt` file will be created in `data/patches/*.svs/` folders.
  
+
+## Performance on Summit
+
+**Tile time**
+With ADIOS
+Between 0.5 and 7.66 IO seconds for a total tile time of 31.49 to 129.48 seconds
+
+Without ADIOS
+Between 18.37 and 149.34 IO seconds for a total tile time of 49.88 to 240.94 seconds
+
+**Patch and batch time**
+With ADIOS
+Reading between 56 to 98 seconds for a total batch time of 132 to 198 seconds
+
+Without ADIOS
+Between 728 and 943 seconds for a total batch time of 157 to 230 seconds
+
+**ML**
+Between 386 to 510 seconds
