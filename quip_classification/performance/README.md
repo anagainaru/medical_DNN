@@ -1,3 +1,16 @@
+# Quip pipeline performance
+
+The initial code uses two stages in the pipeline, tile extraction and classification. 
+Inital code compared to ADIOS uses POSIX calls for writing and reading the tiles.
+
+Pipeline and performance distribiution, given by the execution time of the classification for 12 different whole slide images. 
+![WSI pipeline](wsi_pipeline.jpg)
+
+Performance per WSI
+![WSI classification performance](wsi_classification.jpg)
+
+Measuring time is done per WSI. The followinf code snipets discribe how time was measured.
+
 ## Pre-processing
 
 In file `u24_lymphocyte/patch_extraction/save_svs_to_tiles.py`
