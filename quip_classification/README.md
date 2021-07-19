@@ -105,6 +105,7 @@ conda create --name cloned-ibm-env --clone ibm-wml-ce-1.6.2-1
 conda activate cloned-ibm-env
 conda install mpi4py
 conda install numpy
+conda install pillow
 ```
 
 By default this should create the cloned environment in `/ccs/home/againaru/.conda/envs/cloned-ibm-env`. This has to be done only once. Future uses will use:
