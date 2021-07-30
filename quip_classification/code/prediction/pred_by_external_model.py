@@ -30,6 +30,9 @@ BatchSize = int(sys.argv[4])  # shahira: Batch size argument
 # BatchSize = 48;
 print('BatchSize = ', BatchSize)
 
+output_folder = BPFileName[:-4] # remove .svs
+adios_extension = ".bp"
+adios_engine = "BPFile"
 
 def whiteness(png):
     wh = (np.std(png[:, :, 0].flatten()) + np.std(png[:, :, 1].flatten()) + np.std(png[:, :, 2].flatten())) / 3.0
@@ -47,7 +50,7 @@ def load_data(todo_list, rind, input_type):
     cind = 0
     iotime = 0
     if input_type == "adios":
-        with adios2.open(BPFileName, "r") as fh:
+        with adios2.open(BPFileName, "r", engine_type="BPFile") as fh:
             for fstep in fh:
                 step = fstep.current_step()
                 # inspect variables in current step
@@ -149,7 +152,7 @@ def val_fn_epoch_on_disk(classn, model, input_type):
     n3 = 0
     if input_type == "adios":
         todo_list = list()
-        with adios2.open(BPFileName, "r") as fh:
+        with adios2.open(output_folder + adios_extension, "r", engine_type=adios_engine) as fh:
             for fstep in fh:
                 vars = fstep.available_variables()
                 for name in vars:

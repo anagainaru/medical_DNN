@@ -9,9 +9,12 @@ echo $PATCH_PATH
 echo $LYM_CNN_PRED_DEVICE
 
 cd lymphocyte
-echo "bash pred_thread_lym.sh ${PATCH_PATH} ${THREAD} ${NTHREADS} ${LYM_CNN_PRED_DEVICE}"
+echo "bash pred_thread_lym.sh ${SVS_INPUT_PATH} ${THREAD} ${NTHREADS} ${LYM_CNN_PRED_DEVICE}"
 bash pred_thread_lym.sh \
-    ${PATCH_PATH} ${THREAD} ${NTHREADS} ${LYM_CNN_PRED_DEVICE} #\
+    ${SVS_INPUT_PATH} ${THREAD} ${NTHREADS} ${LYM_CNN_PRED_DEVICE}
+#echo "bash pred_thread_lym.sh ${PATCH_PATH} ${THREAD} ${NTHREADS} ${LYM_CNN_PRED_DEVICE}"
+#bash pred_thread_lym.sh \
+#    ${PATCH_PATH} ${THREAD} ${NTHREADS} ${LYM_CNN_PRED_DEVICE} #\
     #> ${LOG_OUTPUT_FOLDER}/log.pred_thread_lym_${THREAD}.txt 2>&1
 cd ..
 

@@ -16,7 +16,6 @@ except ImportError:
 slide_name = sys.argv[2] + '/' + sys.argv[1]
 output_folder = sys.argv[3] + '/' + sys.argv[1]
 patch_size_20X = 1000
-config_file = "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/quip_classification/adios2_config.xml"
 adios_extension = ".bp"
 adios_engine = "BPFile"
 
@@ -90,7 +89,7 @@ def main(input_type):
         open(fdone, 'w').close()
     else:
         iotime = 0
-        with adios2.open( output_folder + adios_extension, "w", engine=adios_engine ) as fh:
+        with adios2.open( output_folder + adios_extension, "w", engine_type=adios_engine) as fh:
             for x in range(1, width, pw):
                 for y in range(1, height, pw):
                     if x + pw > width:
