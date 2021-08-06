@@ -1,5 +1,6 @@
 #!/bin/bash
-source ../conf/variables.sh
+ROOT_PATH=/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/quip_classification/u24_lymphocyte
+source ${ROOT_PATH}/conf/variables.sh
 
 set -x
 COD_PARA=$1
@@ -8,8 +9,8 @@ IN_FOLDER=${SVS_INPUT_PATH}
 OUT_FOLDER=${PATCH_PATH}
 echo $COD_PARA
 echo $MAX_PARA
-echo $IN_FOLDER
-echo $OUT_FOLDER
+echo " In folder $IN_FOLDER"
+echo " Out folder $OUT_FOLDER"
 
 
 LINE_N=0
@@ -19,7 +20,7 @@ for files in ${IN_FOLDER}/*.*; do
 
     SVS=`echo ${files} | awk -F'/' '{print $NF}'`
     echo "[debug] Looking at file $SVS"
-    python save_svs_to_tiles.py $SVS $IN_FOLDER $OUT_FOLDER
+    python ${ROOT_PATH}/patch_extraction/save_svs_to_tiles.py $SVS $IN_FOLDER $OUT_FOLDER
     if [ $? -ne 0 ]; then
         echo "failed extracting patches for " ${SVS}
         rm -rf ${OUT_FOLDER}/${SVS}
