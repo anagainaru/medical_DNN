@@ -16,8 +16,9 @@ except ImportError:
 slide_name = sys.argv[2] + '/' + sys.argv[1]
 output_folder = sys.argv[3] + '/' + sys.argv[1]
 patch_size_20X = 1000
-config_file = "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/quip_classification/adios2_config.xml"
 adios_extension = ".bp"
+adios_engine = "sst"
+print("TilesFile = ", output_folder)
 
 def main(input_type):
     print("IS not ADIOS", NOADIOS)
@@ -30,13 +31,8 @@ def main(input_type):
 
     print('extracting {}'.format(output_folder))
 
-    if input_type is not "adios2":	
-        if not os.path.exists(output_folder):
-            os.mkdir(output_folder)
-
     try:
         oslide = openslide.OpenSlide(slide_name)
-    #    mag = 10.0 / float(oslide.properties[openslide.PROPERTY_NAME_MPP_X]);
         if openslide.PROPERTY_NAME_MPP_X in oslide.properties:
            mag = 10.0 / float(oslide.properties[openslide.PROPERTY_NAME_MPP_X])
         elif "XResolution" in oslide.properties:
@@ -55,41 +51,10 @@ def main(input_type):
 
     print(slide_name, width, height)
 
-    if input_type is not "adios2":
+    if input_type is "adios2":
         iotime = 0
-        for x in range(1, width, pw):
-            for y in range(1, height, pw):
-                if x + pw > width:
-                    pw_x = width - x
-                else:
-                    pw_x = pw
-                if y + pw > height:
-                    pw_y = height - y
-                else:
-                    pw_y = pw
-
-                if (int(patch_size_20X * pw_x / pw) <= 0) or \
-                   (int(patch_size_20X * pw_y / pw) <= 0) or \
-                   (pw_x <= 0) or (pw_y <= 0):
-                    continue
-
-                patch = oslide.read_region((x, y), 0, (pw_x, pw_y))
-                #shahira: skip where the alpha channel is zero
-                patch_arr = np.array(patch)
-                if(patch_arr[:,:,3].max() == 0):
-                    continue
-
-                # Resize into 20X.
-                patch = patch.resize((int(patch_size_20X * pw_x / pw), int(patch_size_20X * pw_y / pw)), Image.ANTIALIAS)
-                fname = '{}/{}_{}_{}_{}.png'.format(output_folder, x, y, pw, patch_size_20X)
-                t0 = time.perf_counter()
-                patch.save(fname)
-                iotime = iotime + time.perf_counter() -t0
-        print("IOTime = {} sec {}".format(iotime, slide_name))           
-        open(fdone, 'w').close()
-    else:
-        iotime = 0
-        with adios2.open( output_folder + adios_extension, "w", config_file) as fh:
+        with adios2.open( output_folder + adios_extension, "w", engine_type=adios_engine) as fh:
+            print("Start writing in", output_folder + adios_extension)
             for x in range(1, width, pw):
                 for y in range(1, height, pw):
                     if x + pw > width:
@@ -124,10 +89,10 @@ def main(input_type):
                     print("writing :" + fname)
                      
                     t0 = time.perf_counter()
-                    fh.write(fname, patch_arr, shape, start, count)
+                    fh.write(fname, patch_arr, shape, start, count, end_step=True)
                     iotime = iotime + time.perf_counter() -t0
-        print("IOTime = {} sec {}".format(iotime, slide_name))           
-
+            #fh.write("time", np.array([iotime]), end_step=True)
+        print("IOTileTime = {} sec {}".format(iotime, slide_name))
 
 def printUsage():
     print("Options: --input=adios ")
@@ -135,21 +100,6 @@ def printUsage():
 
 if __name__ == "__main__":
     INPUT_TYPE = None
-    # try:
-    #     opts, args = getopt.getopt(sys.argv[1:], "hi:", ["help", "input"])
-    # except getopt.GetoptError:
-    #     printUsage()
-    #     sys.exit(2)
-    # for opt, arg in opts:
-    #     if opt == "-h":
-    #         printUsage()
-    #         sys.exit()
-    #     elif opt in ("-i", "--input"):
-    #         INPUT_TYPE = arg
-    #         if INPUT_TYPE == "adios" and NOADIOS:
-    #             print("Cannot import required ADIOS library", file=sys.stderr)
-    #             sys.exit(1)
-
     t0 = time.perf_counter()
     main("adios2")
     print('DONE in {} sec {}'.format(time.perf_counter() -t0, slide_name))
