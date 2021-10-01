@@ -37,3 +37,16 @@ https://pytorch.org/docs/stable/data.html#torch.utils.data.IterableDataset.
 
 We may also want to think about customizing the DataLoader, but that would probably be a heavier lift.
 https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader
+
+
+
+```
+module load python
+[againaru@andes-login4 imagenet]$ pip install -r requirements.txt --target /ccs/home/againaru/medical/tenserflow_example/python_install
+export PYTHONPATH=$PYTHONPATH:/ccs/home/againaru/medical/tenserflow_example/python_install
+[againaru@andes-login4 imagenet]$ python main.py -a resnet18 /gpfs/alpine/csc143/proj-shared/againaru/imagenet/imagenet_small
+=> creating model 'resnet18'
+using CPU, this will be slow
+Epoch: [0][ 0/40]	Time 13.696 (13.696)	Data  1.789 ( 1.789)	Loss 7.0595e+00 (7.0595e+00)	Acc@1   0.00 (  0.00)	Acc@5   0.39 (  0.39)
+Epoch: [0][10/40]	Time  9.565 ( 9.752)	Data  0.017 ( 0.183)	Loss 7.2454e+00 (7.0950e+00)	Acc@1   0.00 (  0.00)	Acc@5   0.78 (  0.53)
+```
