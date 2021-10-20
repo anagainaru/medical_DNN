@@ -6,6 +6,9 @@ import time
 import warnings
 import numpy as np
 
+from util import AverageMeter
+import adios2
+
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -17,13 +20,6 @@ import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
-import torchvision.models as models
-
-import adios2
-
-model_names = sorted(name for name in models.__dict__
-    if name.islower() and not name.startswith("__")
-    and callable(models.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('data', metavar='DIR',
@@ -64,7 +60,6 @@ def main():
     if args.seed is not None:
         random.seed(args.seed)
         torch.manual_seed(args.seed)
-        cudnn.deterministic = True
 
     if args.dist_url == "env://" and args.world_size == -1:
         args.world_size = int(os.environ["WORLD_SIZE"])
@@ -144,12 +139,14 @@ def main_worker(gpu, ngpus_per_node, args):
 
     print("Evaluate ", args.evaluate)
     if args.evaluate:
-        print("Writing validation data in test.bp")
-        with adios2.open("test.bp", "w", engine_type="BPFile") as fh:
+        print("Writing validation data in imagenet.sst")
+        with adios2.open("imagenet", "w", config_file="adios.xml",
+                         io_in_config_file="test") as fh:
             write_data_to_adios(val_loader, fh, 0)
         return
 
-    with adios2.open("test.bp", "w", engine_type="BPFile") as fh:
+    with adios2.open("imagenet", "w", config_file="adios.xml",
+                     io_in_config_file="test") as fh:
         for epoch in range(args.start_epoch, args.epochs):
             if args.distributed:
                 train_sampler.set_epoch(epoch)
@@ -157,17 +154,17 @@ def main_worker(gpu, ngpus_per_node, args):
             write_data_to_adios(val_loader, fh, epoch)
 
 def write_data_to_adios(loader_data, fh, epoch):
+    write_time = AverageMeter('Time', ':6.3f')
+    end = time.time()
     for i, (images, target) in enumerate(loader_data):
-        print("Images shape", np.shape(np.array(images.numpy())))
-        print("Target shape", np.shape(np.array(target.numpy())))
         ishape = np.shape(np.array(images.numpy()))
         tshape = np.shape(np.array(target.numpy()))
-        fh.write("epoch", str(epoch), end_step=False)
-        print(ishape, [0]*len(ishape), ishape)
         fh.write("images", images.numpy(), ishape, [0]*len(ishape),
                  ishape, end_step=False)
         fh.write("target", target.numpy(), tshape, [0]*len(tshape),
                  tshape, end_step=True)
+    write_time.update(time.time() - end)
+    print(write_time)
 
 if __name__ == '__main__':
     main()

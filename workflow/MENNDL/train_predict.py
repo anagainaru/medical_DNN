@@ -6,6 +6,9 @@ import time
 import warnings
 import numpy as np
 
+from util import AverageMeter
+import adios2
+
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -19,15 +22,11 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
 
-import adios2
-
 model_names = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
     and callable(models.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
-#parser.add_argument('data', metavar='DIR',
-#                    help='path to dataset')
 parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
                     choices=model_names,
                     help='model architecture: ' +
@@ -283,9 +282,9 @@ def validate(model, criterion, args):
     losses = AverageMeter('Loss', ':.4e')
     top1 = AverageMeter('Acc@1', ':6.2f')
     top5 = AverageMeter('Acc@5', ':6.2f')
-    with adios2.open("test.bp", "r", engine_type="BPFile") as fh:
+    with adios2.open("imagenet", "r", engine_type="sst") as fh:
         progress = ProgressMeter(
-            fh.steps(),
+            0,
             [batch_time, losses, top1, top5],
             prefix='Test: ')
 
@@ -299,15 +298,11 @@ def validate(model, criterion, args):
                 step_vars = fsteps.available_variables()
                 var = step_vars["images"]
                 count = [int(i) for i in var["Shape"].split(",")]
-                if step==0:
-                    print("Step", step, "img shape", count)
                 images_np = fsteps.read("images", [0]*len(count), count)
                 images = torch.from_numpy(images_np)
 
                 var = step_vars["target"]
                 count = [int(i) for i in var["Shape"].split(",")]
-                if step==0:
-                    print("Step", step, "target shape", count)
                 target_np = fsteps.read("target", [0]*len(count), count)
                 target = torch.from_numpy(target_np)
 
@@ -344,30 +339,6 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
     torch.save(state, filename)
     if is_best:
         shutil.copyfile(filename, 'model_best.pth.tar')
-
-
-class AverageMeter(object):
-    """Computes and stores the average and current value"""
-    def __init__(self, name, fmt=':f'):
-        self.name = name
-        self.fmt = fmt
-        self.reset()
-
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
-
-    def __str__(self):
-        fmtstr = '{name} {val' + self.fmt + '} ({avg' + self.fmt + '})'
-        return fmtstr.format(**self.__dict__)
 
 
 class ProgressMeter(object):
