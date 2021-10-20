@@ -95,3 +95,12 @@ Test: [20/1]    Time  1.603 ( 1.874)    Loss 7.7143e+00 (7.7116e+00)    Acc@1   
 Test: [30/1]    Time  1.471 ( 1.756)    Loss 7.3559e+00 (7.7362e+00)    Acc@1   0.00 (  0.10)   Acc@5   0.00 (  0.44)
  * Acc@1 0.080 Acc@5 0.510
 ```
+
+### Memory
+
+```
+> du -H /gpfs/alpine/csc143/proj-shared/againaru/imagenet/imagenet_small 
+2.5GB /gpfs/alpine/csc143/proj-shared/againaru/imagenet/imagenet_small 
+> du imagenet.bp
+5.7GB imagenet.bp
+```
