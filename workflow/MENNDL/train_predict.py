@@ -284,9 +284,10 @@ def validate(model, criterion, args):
     losses = AverageMeter('Loss', ':.4e')
     top1 = AverageMeter('Acc@1', ':6.2f')
     top5 = AverageMeter('Acc@5', ':6.2f')
-    with adios2.open("imagenet", "r", engine_type="sst") as fh:
+    with adios2.open("imagenet", "r", config_file="adios.xml",
+            io_in_config_file="test") as fh:
         progress = ProgressMeter(
-            0,
+            0,#fh.steps(), # sst cannot use .steps()
             [batch_time, losses, top1, top5],
             prefix='Test: ')
 

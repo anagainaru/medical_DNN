@@ -143,12 +143,12 @@ def main_worker(gpu, ngpus_per_node, args):
     if args.evaluate:
         print("Writing validation data in imagenet.sst")
         with adios2.open("imagenet", "w", config_file="adios.xml",
-                         io_in_config_file="test") as fh:
+                io_in_config_file="test") as fh:
             write_data_to_adios(val_loader, fh, 0)
         return
 
     with adios2.open("imagenet", "w", config_file="adios.xml",
-                     io_in_config_file="test") as fh:
+            io_in_config_file="test") as fh:
         for epoch in range(args.start_epoch, args.epochs):
             if args.distributed:
                 train_sampler.set_epoch(epoch)
