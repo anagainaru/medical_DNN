@@ -72,14 +72,22 @@ The code is changed to inclide ADIOS streaming or data transfer through files:
 
 <img width="802" alt="Screen Shot 2021-11-30 at 3 36 42 PM" src="https://user-images.githubusercontent.com/16229479/144124084-4572e8ae-d272-4fcc-a322-3ba1c2214444.png">
 
+Running the modified code, for SST, the adios.xml file will include the SST engine and the number of classification processes running in parallel. The following example is for two classification processes running on two nodes:
+```bash
+srun --nodes=1 -r 0 python prepare_data.py -j 4 -e /gpfs/alpine/csc143/proj-shared/againaru/imagenet/imagenet_small &
+srun --nodes=1 -r 0 python train_predict.py -j 4 -e -a resnet18 &
+srun --nodes=1 -r 1 python train_predict.py -j 4 -e -a resnet18 &
+wait
+```
+
+For runs that store the dataset to BP files, the adios.xml file will include the BPFile engine.
+```bash
+srun --nodes=1 -r 0 python prepare_data.py -j 4 -e /gpfs/alpine/csc143/proj-shared/againaru/imagenet/imagenet_small
+srun --nodes=1 -r 0 python train_predict.py -j 4 -e -a resnet18
+```
 
 
-
-
-
-
-
-## Validation
+## Validation results
 
 Initial (using one worker to load the data)
 
