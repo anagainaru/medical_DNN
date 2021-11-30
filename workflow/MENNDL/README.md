@@ -1,27 +1,60 @@
 # MENNDL
 
-**Code** in [https://github.com/pytorch/examples/blob/master/imagenet/main.py](https://github.com/pytorch/examples/blob/master/imagenet/main.py)
+Code in [https://github.com/pytorch/examples/blob/master/imagenet/main.py](https://github.com/pytorch/examples/blob/master/imagenet/main.py)
 
 ```
 git clone https://github.com/pytorch/examples.git
 ```
 
-**Input** 
+### Input
 
 Files are in the `dtn.ccs.ornl.gov:/gpfs/alpine/world-shared/csc396/forAna/` folder.
 
 That folder contains `imagenet.tar.xz` and `imagenet_small.tar.xz`. 
-The small version is just 10 examples per class in the train and val datasets and is probably enough for this.
+
+The small version is just 10 examples per class in the train and val datasets.
 
 <sup> <sup> [*] dtn.ccs.ornl.gov is the data transfer node(s) for OLCF. You should use them when moving large amounts of data to/from OLCF (and not using Globus... which I also highly recommend if you haven't used it). You just use your OLCF user/passcode like you would on Summit. 
 </sup> </sup>
 
-**Running**
+### Running
 
-To train the model on a single GPU:
+To train the model using the initial code on a single GPU:
+
 ```
 python main.py -a resnet18 imagenet_small
 ```
+
+**ANDES**
+
+Pytorch needs to be installed `pip install torch -t /path`
+
+ADIOS needs to be installed with the python module loaded.
+
+```bash
+module load python
+
+# TENSERFLOW
+export PYTHONPATH=$PYTHONPATH:/ccs/home/againaru/medical/tenserflow_example/python_install
+# ADIOS-2
+export LD_LIBRARY_PATH=/ccs/home/againaru/adios/ADIOS2/install_andes/lib64:$LD_LIBRARY_PATH
+export PYTHONPATH=/ccs/home/againaru/adios/ADIOS2/install_andes/lib/python3.7/site-packages:$PYTHONPATH
+```
+
+**Summit**
+
+Pytorch is installed in the `ibm-wml-ce/1.6.2-1` module that needs to be activated. Python version inside the module is 3.6, so ADIOS needs to be installed with this version of python.
+
+```bash
+module load ibm-wml-ce/1.6.2-1
+conda activate ibm-wml-ce-1.6.2-1
+
+# ADIOS-2
+export LD_LIBRARY_PATH=/ccs/home/againaru/adios/ADIOS2/install_ibm-wml-ce/lib64:$LD_LIBRARY_PATH
+export PYTHONPATH=/ccs/home/againaru/adios/ADIOS2/install_ibm-wml-ce/lib/python3.7/site-packages:$PYTHONPATH
+```
+
+**Comments**
 
 I would think what you would want to do, is use a custom dataset instead of ImageFolder here: 
 
