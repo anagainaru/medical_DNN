@@ -102,6 +102,7 @@ def main():
     args.distributed = args.world_size > 1 or args.multiprocessing_distributed
 
     ngpus_per_node = torch.cuda.device_count()
+    end = time.time()
     if args.multiprocessing_distributed:
         # Since we have ngpus_per_node processes per node, the total world_size
         # needs to be adjusted accordingly
@@ -112,6 +113,7 @@ def main():
     else:
         # Simply call main_worker function
         main_worker(args.gpu, ngpus_per_node, args)
+    print("PREDtime %3.2f" %(time.time() - end))
 
 
 def main_worker(gpu, ngpus_per_node, args):
@@ -282,9 +284,10 @@ def validate(model, criterion, args):
     losses = AverageMeter('Loss', ':.4e')
     top1 = AverageMeter('Acc@1', ':6.2f')
     top5 = AverageMeter('Acc@5', ':6.2f')
-    with adios2.open("imagenet", "r", engine_type="sst") as fh:
+    with adios2.open("imagenet", "r", config_file="adios.xml",
+            io_in_config_file="test") as fh:
         progress = ProgressMeter(
-            0,
+            0,#fh.steps(), # sst cannot use .steps()
             [batch_time, losses, top1, top5],
             prefix='Test: ')
 

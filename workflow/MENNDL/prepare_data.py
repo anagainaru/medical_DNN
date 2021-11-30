@@ -67,6 +67,7 @@ def main():
     args.distributed = args.world_size > 1 or args.multiprocessing_distributed
 
     ngpus_per_node = torch.cuda.device_count()
+    end = time.time()
     if args.multiprocessing_distributed:
         # Since we have ngpus_per_node processes per node, the total world_size
         # needs to be adjusted accordingly
@@ -77,6 +78,7 @@ def main():
     else:
         # Simply call main_worker function
         main_worker(args.gpu, ngpus_per_node, args)
+    print("PREPROCtime %3.2f" %(time.time() - end))
 
 
 def main_worker(gpu, ngpus_per_node, args):
@@ -141,12 +143,12 @@ def main_worker(gpu, ngpus_per_node, args):
     if args.evaluate:
         print("Writing validation data in imagenet.sst")
         with adios2.open("imagenet", "w", config_file="adios.xml",
-                         io_in_config_file="test") as fh:
+                io_in_config_file="test") as fh:
             write_data_to_adios(val_loader, fh, 0)
         return
 
     with adios2.open("imagenet", "w", config_file="adios.xml",
-                     io_in_config_file="test") as fh:
+            io_in_config_file="test") as fh:
         for epoch in range(args.start_epoch, args.epochs):
             if args.distributed:
                 train_sampler.set_epoch(epoch)
