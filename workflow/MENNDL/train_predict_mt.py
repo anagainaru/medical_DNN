@@ -5,7 +5,8 @@ import shutil
 import time
 import warnings
 import numpy as np
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Pool
+from functools import partial
 
 from util import AverageMeter
 import adios2
@@ -282,11 +283,11 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
             progress.display(i)
 
 
-def adios_read_data(fh, step, images, target):
+def adios_read_data(step):
+    global fh
     images_np = fh.read("images", (), (), step, 1)
-    images.put(images_np[0])
     target_np = fh.read("target", (), (), step, 1)
-    target.put(target_np[0])
+    return [images_np[0], target_np[0]]
 
 
 def validate_batch(model, images, target, metrics, criterion, args):
@@ -309,12 +310,14 @@ def validate_batch(model, images, target, metrics, criterion, args):
 
 
 def validate(model, criterion, args):
+    global fh
     batch_time = AverageMeter('Time', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
     top1 = AverageMeter('Acc@1', ':6.2f')
     top5 = AverageMeter('Acc@5', ':6.2f')
     metrics = {"losses": losses, "top1": top1, "top5": top5}
-    with adios2.open("test", "r", config_file="adios.xml", io_in_config_file="test") as fh:
+    with adios2.open("test", "r", config_file="adios.xml",
+                     io_in_config_file="test") as fh:
         progress = ProgressMeter(
             fh.steps(),
             [batch_time, losses, top1, top5],
@@ -324,43 +327,20 @@ def validate(model, criterion, args):
         model.eval()
 
         class_total_time = 0
+        processed_steps = 0
         with torch.no_grad():
-            threads = []
-            images = Queue()
-            target = Queue() 
-            read_steps = 0 # how many steps have been read
-            processed_steps = 0 # how many steps have been processed
             end = time.time()
-            while processed_steps < fh.steps():
-                prefetch = read_steps - processed_steps 
-                # start threads for reading the data so that there are always
-                # a max of args.workers running concurrently
-                for i in range(prefetch, args.workers):
-                    if read_steps >= fh.steps():
-                        break
-                    t = Process(
-                        target=adios_read_data,
-                        args=[fh, read_steps, images, target])
-                    t.start()
-                    threads.append(t)
-                    read_steps += 1
-
-                # validate read images
-                img = images.get()
-                tar = target.get()
-
-                class_time = time.time()
-                validate_batch(model, img, tar, metrics,
-                               criterion, args)
-                processed_steps += 1
-                batch_time.update(time.time() - end)
-                end = time.time()
-                class_total_time += end - class_time
-                if processed_steps % args.print_freq == 0:
-                    progress.display(processed_steps)
-
-            for t in threads:
-                t.join()
+            with Pool(processes=args.workers) as pool:
+                for i in pool.imap_unordered(adios_read_data, range(fh.steps() - 1)):
+                    class_time = time.time()
+                    validate_batch(model, i[0], i[1], metrics,
+                                   criterion, args)
+                    batch_time.update(time.time() - end)
+                    end = time.time()
+                    processed_steps += 1
+                    class_total_time += end - class_time
+                    if processed_steps % args.print_freq == 0:
+                        progress.display(processed_steps)
 
         print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
               .format(top1=top1, top5=top5))
