@@ -28,19 +28,36 @@ The TenserFlow implementation is located in `external_model_TF.py`. For pytorch 
 
 ### PyTorch implementation
 
+
+Loading the pytorch MENNDL model
+
+```python
+from pymenndl.constructor import ConvClassifier
+
+file_prefix = model_path
+network_wrapper = ConvClassifier(file_prefix=file_prefix)
+network_wrapper.try_restart()
+net = network_wrapper.net
+net.cuda().half()
+net.eval()
+```
+
+Read the dataset and prediction
+
+```python
+import torch
+import torchvision.transforms as transforms
+from plasmatorch.LMDB import LMDBDataset
+
+transform = transforms.Compose([transforms.CenterCrop(100), transforms.ToTensor()])
+valset = LMDBDataset('val_ub_lmdb', transform=transform)
+valloader   = torch.utils.data.DataLoader( valset, batch_size=128, shuffle=False, num_workers=16 )
+
+with torch.no_grad():
+    for inputs, labels in valloader:
+        inputs, labels = inputs.cuda().half(), labels.cuda()
+        outputs = net(inputs)
+```
+
 ### Running Quip with the MENNDL model on Summit
 
-```
-python minimal-run-menndl-v2.py # make sure caching of data is warm so that we get a fair comparison with following runs
-python minimal-run-inceptionv4.py
-python minimal-run-menndl-v1.py
-python minimal-run-menndl-v2.py
-python minimal-run-menndl-noWTN.py
-
-
-# NOTE TO ANA: v2 and noWTN should be the fastest networks
-# NOTE TO ANA: It looks like we are using 100x100 patches in this file.
-               I believe these are center crops of whatever size patches were provided,
-               but the person that handled data wrangling and interfacing with Stonybrook
-               on this project is no longer at ORNL
-```
