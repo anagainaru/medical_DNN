@@ -8,27 +8,45 @@ Framework will work with **data objects, model objects** and allow **query capab
 
 **Model objects** are data objects for which the framework attaches extra information related to the model: model parameters, provenence information (states that the model went through) and input requirements (informing the framework of the pre-processing requirements of a ML application).
 
+ADIOS configuration file:
 ```xml
 <?xml version="1.0"?>
-<framework-config>
-    <adios-config>
-        <io name="test">
-            <engine type="sst">
-                <parameter key="RendezvousReaderCount" value="2"/>
-            </engine>
-        </io>
-    </adios-config>
+<adios-config>
+    <io name="test">
+      <engine type="sst">
+	<parameter key="RendezvousReaderCount" value="2"/>
+        </engine>
+    </io>
+</adios-config>
+```
 
-    <model name="TIL1">
-        <parameter key="PreProc" value="preproc.sh"/>
-        <parameter key="TileSize" value="1000"/>
-    </model>
+Workflow framework configuration file:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<application name="QUIP-preproc">
+    <output>
+        <name> WSIpatch </name>
+        <path> /quip/patches </path>
+        <iolib name="ADIOS">
+            <config> adios.xml </config>
+        </iolib>
+    </output>
+</application>
 
-    <model name="TIL2">
-        <parameter key="PreProc" value="preproc.sh"/>
-        <parameter key="TileSize" value="1000"/>
-    </model>
-</framework-config>
+<application name="QUIP-classification">
+    <input> 
+        <name> WSIpatch </name>
+        <iolib name="ADIOS">
+            <config> adios.xml </config>
+        </iolib>
+    </input>
+    <preprocess>
+        <code path="/quip/create-batch.sh">
+            <param> 100 </param>
+        </code>
+    </preprocess>
+</application>
+</xml>
 ```
 
 **Queries**
