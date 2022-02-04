@@ -8,6 +8,29 @@ pip install ./MENNDL/pymenndl-minimal # install code necessary to run menndl cre
 pip install ./MENNDL/plasmatorch # install the code we use to utilize LMDB. NOTE TO ANA: we were storing the data in LMDB, not using JPEG files.
 ```
 
+For Summit, the conda environment `open-ce-1.4.0-py37-0`
+
+```bash
+module load open-ce/1.4.0-py37-0
+conda activate open-ce-1.4.0-py37-0
+pip install ./pymenndl-minimal -t /ccs/home/againaru/medical/quip_MENNDL/modules-install
+cp -r  plasmatorch/plasmatorch module-install
+pip install lmdb -t /ccs/home/againaru/medical/quip_MENNDL/modules-install
+
+export PYTHONPATH=$PYTHONPATH:/ccs/home/againaru/medical/quip_MENNDL/modules-install
+
+// torchaudio is not installed
+python
+>>> torch.__version__
+'1.9.0'
+>>> torchvision.__version__
+'0.10.0'
+>>> lmdb.__version__
+'1.3.0'
+>>> h5py.__version__
+'3.2.1'
+```
+
 ### Changes to the TenserFlow code
 
 The code for prediction is in `u24_lymphocyte/prediction/lymphocyte` folder. 
