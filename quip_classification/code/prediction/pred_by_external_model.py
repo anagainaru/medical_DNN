@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import time
 
-from external_model import load_external_model, pred_by_external_model
+from external_model_pytorch import load_external_model, pred_by_external_model
 
 from PIL import ImageFile
 NOADIOS = False
