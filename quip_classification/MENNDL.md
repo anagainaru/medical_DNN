@@ -8,6 +8,39 @@ pip install ./MENNDL/pymenndl-minimal # install code necessary to run menndl cre
 pip install ./MENNDL/plasmatorch # install the code we use to utilize LMDB. NOTE TO ANA: we were storing the data in LMDB, not using JPEG files.
 ```
 
+For Summit, the conda environment `open-ce-1.4.0-py37-0` is used. We need to install code necessary to run menndl created networks and plasmatorch for reading the input data.
+
+```bash
+module load open-ce/1.4.0-py37-0
+conda activate open-ce-1.4.0-py37-0
+pip install ./pymenndl-minimal -t /ccs/home/againaru/medical/quip_MENNDL/modules-install
+cp -r  plasmatorch/plasmatorch module-install
+pip install lmdb -t /ccs/home/againaru/medical/quip_MENNDL/modules-install
+
+export PYTHONPATH=$PYTHONPATH:/ccs/home/againaru/medical/quip_MENNDL/modules-install
+
+python
+>>> torch.__version__
+'1.9.0'
+>>> torchvision.__version__
+'0.10.0'
+>>> lmdb.__version__
+'1.3.0'
+>>> h5py.__version__
+'3.2.1'
+```
+
+Testing the MENNDL model on Summit (code stored in `/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_menndl` and in `~/medical/quip_MENNDL`)
+
+```bash
+(open-ce-1.4.0-py37-0) [againaru@login1.summit code]$ python minimal-run-menndl-v2.py
+Found file: a79773ce-5aed-11e9-9b65-70e2841459e0.params - restarting from previous state
+Succesfully loaded network!
+/sw/summit/open-ce/anaconda-base/envs/open-ce-1.4.0-py37-0/lib/python3.7/site-packages/torch/nn/functional.py:718: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at  /gpfs/alpine/stf007/world-shared/davismj/open-ce-builds/rhel8-oce-1.4.0/python-env/conda-bld/pytorch-base_1633116212289/work/c10/core/TensorImpl.h:1156.)
+  return torch.max_pool2d(input, kernel_size, stride, padding, dilation, ceil_mode)
+Avg Time: 0.0206032815829728
+```
+
 ### Changes to the TenserFlow code
 
 The code for prediction is in `u24_lymphocyte/prediction/lymphocyte` folder. 
