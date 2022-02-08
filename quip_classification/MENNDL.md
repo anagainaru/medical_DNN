@@ -94,3 +94,94 @@ with torch.no_grad():
 
 ### Running Quip with the MENNDL model on Summit
 
+```bash
+module load ibm-wml-ce/1.6.2-1
+conda activate ibm-wml-ce-1.6.2-1
+
+export PYTHONPATH=$PYTHONPATH:/ccs/home/againaru/medical/quip_MENNDL/modules-install
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/ADIOS2-Python-fast/build/lib/python3.6/site-packages:$PYTHONPATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/openslide/:$LD_LIBRARY_PATH
+
+Module load hdf5
+
+(ibm-wml-ce-1.6.2-1) [againaru@login3.summit quip_classification]$ python -u /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/svs/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/Pytorch_MENNDL_model/a79773ce-5aed-11e9-9b65-70e2841459e0 patch-level-lym.txt 96 0
+BatchSize =  96
+SST file =  /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/patches/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs.bp
+START
+[debug] Path exists /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/patches/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs.bp
+Load external model
+Found file: /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/Pytorch_MENNDL_model/a79773ce-5aed-11e9-9b65-70e2841459e0.params - restarting from previous state
+Succesfully loaded network!
+Start reading from /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/patches/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs.bp
+Looking at step  0 1
+processing : 1_1_997_1000.png nx = 1000  ny = 1000
+Looking at step  1 1
+processing : 1_998_997_1000.png nx = 1000  ny = 1000
+Looking at step  2 1
+processing : 1_1995_997_1000.png nx = 1000  ny = 1000
+Looking at step  3 1
+processing : 1_2992_997_1000.png nx = 1000  ny = 1000
+Looking at step  4 1
+processing : 1_3989_997_1000.png nx = 1000  ny = 1000
+Looking at step  5 1
+processing : 1_4986_997_1000.png nx = 1000  ny = 1000
+Looking at step  6 1
+processing : 1_5983_997_1000.png nx = 1000  ny = 1000
+Looking at step  7 1
+processing : 1_6980_997_1000.png nx = 1000  ny = 1000
+Looking at step  8 1
+processing : 1_7977_997_1000.png nx = 1000  ny = 1000
+Looking at step  9 1
+processing : 1_8974_997_1000.png nx = 1000  ny = 1000
+Looking at step  10 1
+processing : 1_9971_997_1000.png nx = 1000  ny = 1000
+Looking at step  11 1
+processing : 1_10968_997_1000.png nx = 1000  ny = 1000
+Looking at step  12 1
+processing : 1_11965_997_1000.png nx = 1000  ny = 1000
+Looking at step  13 1
+processing : 1_12962_997_1000.png nx = 1000  ny = 1000
+Looking at step  14 1
+processing : 1_13959_997_1000.png nx = 1000  ny = 1000
+Looking at step  15 1
+processing : 1_14956_997_1000.png nx = 1000  ny = 1000
+Looking at step  16 1
+processing : 1_15953_997_1000.png nx = 1000  ny = 1000
+Looking at step  17 1
+processing : 1_16950_997_1000.png nx = 1000  ny = 1000
+Looking at step  18 1
+processing : 1_17947_997_1000.png nx = 1000  ny = 1000
+Looking at step  19 1
+processing : 1_18944_997_1000.png nx = 1000  ny = 1000
+Looking at step  20 1
+processing : 1_19941_997_1000.png nx = 1000  ny = 1000
+Looking at step  21 1
+processing : 1_20938_997_1000.png nx = 1000  ny = 1000
+IOTime = 0.6855346062220633 sec for 22 files out of 22 /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/patches/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs
+todo list:  22
+Traceback (most recent call last):
+  File "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py", line 215, in <module>
+    main("adios")
+  File "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py", line 190, in main
+    split_validation(classn, input_type)
+  File "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py", line 168, in split_validation
+    Or, inds, coor = val_fn_epoch_on_disk(classn, model, fh)
+  File "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py", line 135, in val_fn_epoch_on_disk
+    output = pred_by_external_model(model, inputs)
+  File "/gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/external_model_pytorch.py", line 35, in pred_by_external_model
+    pred = model(inputs)
+  File "/sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.2-1/lib/python3.6/site-packages/torch/nn/modules/module.py", line 547, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.2-1/lib/python3.6/site-packages/torch/nn/modules/container.py", line 92, in forward
+    input = module(input)
+  File "/sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.2-1/lib/python3.6/site-packages/torch/nn/modules/module.py", line 547, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.2-1/lib/python3.6/site-packages/torch/nn/modules/container.py", line 92, in forward
+    input = module(input)
+  File "/sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.2-1/lib/python3.6/site-packages/torch/nn/modules/module.py", line 547, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.2-1/lib/python3.6/site-packages/torch/nn/modules/activation.py", line 295, in forward
+    return torch.tanh(input)
+TypeError: tanh(): argument 'input' (position 1) must be Tensor, not numpy.ndarray
+```
