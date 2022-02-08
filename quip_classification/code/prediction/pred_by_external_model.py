@@ -6,6 +6,7 @@ from PIL import Image
 import time
 
 from external_model_pytorch import load_external_model, pred_by_external_model
+from external_model_pytorch import restart_external_model
 
 from PIL import ImageFile
 NOADIOS = False
@@ -18,7 +19,8 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 APS = 100
 adios_extension = ".bp"
-adios_engine = "sst"
+#adios_engine = "sst"
+adios_engine = "BPFile"
 
 TileFolder = sys.argv[1].replace('svs/','patches/')
 BPFileName = sys.argv[1].replace('svs/','patches/') + adios_extension
@@ -110,7 +112,6 @@ def val_fn_epoch_on_disk(classn, model, fh):
     n1 = 0
     n2 = 0
     n3 = 0
-    print("In val_fn_epoch")
     # shahira: Handling tensorflow memory exhaust issue on large slides
     reset_limit = 100
     cur_indx = 0
@@ -142,13 +143,12 @@ def val_fn_epoch_on_disk(classn, model, fh):
             n2 += len(inds)
             n3 += len(coor)
 
-            # shahira: Handling tensorflow memory exhaust issue on large slides
             cur_indx += 1
             if (cur_indx > reset_limit):
                 cur_indx = 0
-                print('Restarting model!')
-                model.restart_model()
-                print('Restarted!')
+                # restarting the model in case of memory exhaust problems
+                restart_external_model(model)
+
     n_files = len(todo_list)
     print("BatchTime = {} sec for {} files {}".format(iotime, n_files, TileFolder))
     print("PredTime = {} sec for {} files {}".format(predtime, n_files, TileFolder))
