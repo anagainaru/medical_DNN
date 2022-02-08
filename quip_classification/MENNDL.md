@@ -94,3 +94,33 @@ with torch.no_grad():
 
 ### Running Quip with the MENNDL model on Summit
 
+```bash
+module load ibm-wml-ce/1.6.2-1
+conda activate ibm-wml-ce-1.6.2-1
+
+export PYTHONPATH=$PYTHONPATH:/ccs/home/againaru/medical/quip_MENNDL/modules-install
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/ADIOS2-Python-fast/build/lib/python3.6/site-packages:$PYTHONPATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/openslide/:$LD_LIBRARY_PATH
+
+module load hdf5
+
+$ python -u /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/svs/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_pytorch/quip_classification/u24_lymphocyte/prediction/Pytorch_MENNDL_model/a79773ce-5aed-11e9-9b65-70e2841459e0 patch-level-lym.txt 96 0
+
+DONE in 391.00140878604725 sec /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/patches/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs 
+// with the initial code
+```
+
+Equivalent execution time using TenserFlow is similar
+```
+module load  ibm-wml-ce/1.6.2-1
+conda activate ibm-wml-ce-1.6.2-1
+module load hdf5
+export PYTHONPATH=/gpfs/alpine/world-shared/csc143/ganyushin/ADIOS2-Python-fast/build/lib/python3.6/site-packages:$PYTHONPATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/quip_app/ADIOS2-Python-fast/build/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/gpfs/alpine/world-shared/csc143/ganyushin/openslide/:$LD_LIBRARY_PATH
+
+python -u /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_init/quip_classification/u24_lymphocyte/prediction/lymphocyte/pred_by_external_model.py /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/svs/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_init/quip_classification/u24_lymphocyte/prediction/NNFramework_TF_models/config_vgg-mix_test_ext.ini patch-level-lym.txt 96 0
+
+DONE in 365.4974382640794 sec /gpfs/alpine/csc143/proj-shared/againaru/medical/quip_adios/data/patches/TCGA-22-4599-11A-01-TS1.6361e51a-0f6d-4ef3-9d93-0e7b16834ead.svs
+```
