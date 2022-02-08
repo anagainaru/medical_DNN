@@ -1,9 +1,5 @@
 import numpy as np
 import sys
-sys.path.append("..");
-sys.path.append(".");
-sys.path.append("../..");
-sys.path.append("...");
 import torch
 from pymenndl.constructor import ConvClassifier
 import torchvision.transforms as transforms
@@ -15,47 +11,29 @@ def load_external_model(model_path):
     network_wrapper = ConvClassifier(file_prefix=file_prefix)
     network_wrapper.try_restart()
     net = network_wrapper.net
-    #net.cuda().half()
-    #net.eval()
     return net
 
 def pred_by_external_model(model, inputs):
-    # Get prediction here
     # model:
     #     A model loaded by load_external_model
     # inputs :
     #     float32 numpy array with shape N x 3 x 100 x 100
     #     Range of value: 0.0 ~ 255.0
-    #     You may need to rearrange inputs:
-    #     inputs = inputs.transpose((0, 2, 3, 1))
     # Expected output:
     #     float32 numpy array with shape N x 1
     #     Each entry is a probability ranges 0.0 ~ 1.0
-    inputs = inputs.transpose((0, 2, 3, 1))
-    pred = model(inputs)
-    return pred;
+    #     Output is transformed to correspond to the output of the TenserFlow model
+    #       - the MENNDL model returns both negative and positive classes ([:,0:1] chooses the positive ones)
+    tfinput = torch.from_numpy(inputs)
+    pred = model(tfinput)
+    return pred.detach().numpy()[:,1:2];
+
+def restart_external_model(model):
+    # pytorch does not need restarting (no memory exhaust problem)
+    return
 
 if __name__ == "__main__":
-    
-    ## LUAD   ###############################################################  
-    ## LUAD - semiauto - InceptionV4
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_incv4_b128_crop100_noBN_wd5e-4_d75_luad_semiauto.ini";
-    ## LUAD - semiauto - VGG16
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_vgg16_b128_crop100_luad_semiauto.ini";
-    ## LUAD - manual - InceptionV4
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_incv4_b128_crop100_noBN_wd5e-4_d75_luad_manual.ini";
-    ## LUAD - manual - VGG16
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_vgg16_b128_crop100_luad_manual.ini";
-
-    ## SKCM   ############################################################### 
-    ## SKCM - semiauto - InceptionV4
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_incv4_b128_crop100_noBN_wd5e-4_d75_skcm_semiauto.ini";
-    ## SKCM - semiauto - VGG16
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_vgg16_b128_crop100_skcm_semiauto.ini";
-    # SKCM - manual - InceptionV4
-    config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_incv4_b128_crop100_noBN_wd5e-4_d75_skcm_manual.ini";
-    ## SKCM - manual - VGG16
-    #config_filepath = "/home/shahira/NNFramework_TF_model_config/config_tcga_vgg16_b128_crop100_skcm_manual.ini";
+    config_filepath = "/ccs/home/againaru/medical/quip_MENNDL/code/a79773ce-5aed-11e9-9b65-70e2841459e0";
 
     print(config_filepath)
     model = load_external_model(config_filepath);
