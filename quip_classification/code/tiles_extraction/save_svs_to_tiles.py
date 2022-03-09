@@ -77,8 +77,9 @@ def main(input_type):
                     if(patch_arr[:,:,3].max() == 0):
                         continue
 
-                    # Resize into 20X.
+                    # Resize into 20X and convert to RGB to be consistent with the read side in the inital code
                     patch = patch.resize((int(patch_size_20X * pw_x / pw), int(patch_size_20X * pw_y / pw)), Image.ANTIALIAS)
+                    patch = patch.convert('RGB')
                     patch_arr = np.array(patch)
                     nx = patch_arr.shape[0]
                     ny = patch_arr.shape[1]
