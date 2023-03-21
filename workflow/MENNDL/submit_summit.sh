@@ -1,4 +1,4 @@
-#BSUB -P CSC143
+#BSUB -P {project}
 #BSUB -W 00:50
 #BSUB -nnodes 1
 #BSUB -q debug
